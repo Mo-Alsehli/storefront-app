@@ -20,12 +20,57 @@ Your application must make use of the following libraries:
 In this repo there is a `REQUIREMENTS.md` document which outlines what this API needs to supply for the frontend, as well as the agreed upon data shapes to be passed between front and backend. This is much like a document you might come across in real life when building or extending an API. 
 
 Your first task is to read the requirements and update the document with the following:
-- Determine the RESTful route for each endpoint listed. Add the RESTful route and HTTP verb to the document so that the frontend developer can begin to build their fetch requests.    
-**Example**: A SHOW route: 'blogs/:id' [GET] 
+- Determine the RESTful route for each endpoint listed. Add the RESTful route and HTTP verb to the document so that the frontend developer can begin to build their fetch requests. 
+#### User Routes:
+**Get_Users_Route:** 'http://localhost:3000/users' [Get].  
+**Create_User_Route:** 'http://localhost:3000/users' [Post].  
+**Show_User_Route:** 'http://localhost:3000/users/:id' [Get].  
+**Update_User_Route:** 'http://localhost:3000/users' [patch].  
+**Delete_User_Route:** 'http://localhost:3000/users/:id' [delete]. 
+
+#### Product Routes:
+**Get_Products_Route:** 'http://localhost:3000/products' [Get].  
+**Create_Product_Route:** 'http://localhost:3000/products' [Post].  
+**Show_Product_Route:** 'http://localhost:3000/prodcuts/:id' [Get].  
+**Delete_Product_Route:** 'http://localhost:3000/prodcts/:id' [delete].  
+
+#### Order Routes:
+**Get_Order_Route:** 'http://localhost:3000/orders' [Get].  
+**Create_Order_Route:** 'http://localhost:3000/orders' [Post].  
+**Show_Order_Route:** 'http://localhost:3000/orders/:id' [Get].  
+**Delete_Order_Route:** 'http://localhost:3000/orders/:id' [delete].
+
+#### Adding Product To An Existing Order:
+'http://localhost:3000/orders/:id/products' [Post].
+
+#### Getting Users Which Made Orders.
+'http://localhost:3000/dashboard/users_orders' [Get].
+
+#### Getting Products In A Specific Order.
+'http://localhost:3000/dashboard/products_orders' [Get].
 
 - Design the Postgres database tables based off the data shape requirements. Add to the requirements document the database tables and columns being sure to mark foreign keys.   
-**Example**: You can format this however you like but these types of information should be provided
-Table: Books (id:varchar, title:varchar, author:varchar, published_year:varchar, publisher_id:string[foreign key to publishers table], pages:number)
+##### Design Of Users Table:
+Table: users(id SERIAL PRIMARY KEY, first_name VARCHAR(100)  NOT NULL, last_name VARCHAR(100)  NOT NULL, user_name VARCHAR(255)  NOT NULL, password VARCHAR(255)  NOT NULL);
+##### Design Of Products Table:
+Table: products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(64) NOT NULL,
+    price integer NOT NULL
+);
+##### Design Of Orders Table:
+Table: orders (
+    id SERIAL PRIMARY KEY,
+    status VARCHAR(15) NOT NULL,
+    user_id bigint REFERENCES users(id)  NOT NULL
+);
+##### Design Of order_products Table:
+Table: order_products (
+    id SERIAL PRIMARY KEY,
+    quantity integer,
+    orders_id bigint REFERENCES orders(id),
+    products_id bigint REFERENCES products(id)
+);
 
 **NOTE** It is important to remember that there might not be a one to one ratio between data shapes and database tables. Data shapes only outline the structure of objects being passed between frontend and API, the database may need multiple tables to store a single shape. 
 

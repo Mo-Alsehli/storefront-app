@@ -9,10 +9,9 @@ const {
     POSTGRES_DB,
     POSTGRES_USER,
     POSTGRES_PASSWORD,
-    POSTGRES_TEST,
+    POSTGRES_TEST_DB,
     ENV
 } = process.env;
-console.log(ENV);
 
 if(ENV === "dev"){
  Client = new Pool({
@@ -26,7 +25,7 @@ if(ENV === "dev"){
 if(ENV === "test"){
   Client = new Pool({
     host:POSTGRES_HOST,
-    database:POSTGRES_TEST,
+    database:POSTGRES_TEST_DB,
     user:POSTGRES_USER,
     password:POSTGRES_PASSWORD
 })};

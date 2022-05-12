@@ -10,8 +10,7 @@ dotenv_1.default.config();
 let Client;
 exports.Client = Client;
 // Getting Our Connection Data From .env File.
-const { POSTGRES_HOST, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_TEST, ENV } = process.env;
-console.log(ENV);
+const { POSTGRES_HOST, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_TEST_DB, ENV } = process.env;
 if (ENV === "dev") {
     exports.Client = Client = new pg_1.Pool({
         host: POSTGRES_HOST,
@@ -24,7 +23,7 @@ if (ENV === "dev") {
 if (ENV === "test") {
     exports.Client = Client = new pg_1.Pool({
         host: POSTGRES_HOST,
-        database: POSTGRES_TEST,
+        database: POSTGRES_TEST_DB,
         user: POSTGRES_USER,
         password: POSTGRES_PASSWORD
     });

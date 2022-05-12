@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const products_1 = require("../products");
-const store = new products_1.productsStore();
-describe("Testing The Methods Exist For Products", () => {
+const orders_1 = require("../models/orders");
+const store = new orders_1.ordersStore();
+describe("Testing The Methods Exist For Orders", () => {
     it("Testing Index Method Exist", () => {
         expect(store.index).toBeDefined();
     });

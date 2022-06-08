@@ -7,8 +7,9 @@ class productsStore {
     async index() {
         try {
             const conn = await database_1.Client.connect();
-            const sql = 'SELECT * FROM products;';
+            const sql = "SELECT * FROM products;";
             const result = await conn.query(sql);
+            conn.release();
             return result.rows;
         }
         catch (error) {
@@ -20,7 +21,7 @@ class productsStore {
     async create(p) {
         try {
             const conn = await database_1.Client.connect();
-            const sql = 'INSERT INTO products (name, price) VALUES ($1, $2) RETURNING *;';
+            const sql = "INSERT INTO products (name, price) VALUES ($1, $2) RETURNING *;";
             const result = await conn.query(sql, [p.name, p.price]);
             const product = result.rows[0];
             conn.release();
@@ -35,9 +36,10 @@ class productsStore {
     async show(id) {
         try {
             const conn = await database_1.Client.connect();
-            const sql = 'SELECT id, name, price FROM products WHERE id=$1;';
+            const sql = "SELECT id, name, price FROM products WHERE id=$1;";
             const reslut = await conn.query(sql, [id]);
             const product = reslut.rows[0];
+            conn.release();
             return product;
         }
         catch (error) {
@@ -49,13 +51,28 @@ class productsStore {
     async delete(id) {
         try {
             const conn = await database_1.Client.connect();
-            const sql = 'DELETE FROM products WHERE id=$1 RETURNING id, name, price;';
+            const sql = "DELETE FROM products WHERE id=$1 RETURNING id, name, price;";
             const reslut = await conn.query(sql, [id]);
+            conn.release();
             return reslut.rows[0];
         }
         catch (error) {
             console.log(`Unable To Delete Product With Id: ${id}`);
             throw new Error(`${error}`);
+        }
+    }
+    // Updating A Product
+    async update(p) {
+        try {
+            const conn = await database_1.Client.connect();
+            const sql = "UPDATE products SET name=$1, price=$2 WHERE id=$3 RETURNING id, name, price;";
+            const result = await conn.query(sql, [p.name, p.price, p.id]);
+            conn.release();
+            return result.rows[0];
+        }
+        catch (error) {
+            console.log(`Couldn't Update User With Id: ${p.id}`);
+            console.log(error);
         }
     }
 }

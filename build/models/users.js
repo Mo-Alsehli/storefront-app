@@ -29,7 +29,7 @@ class userModel {
     async show(id) {
         try {
             const conn = await database_1.Client.connect();
-            const sql = "SELECT id, first_name, last_name, user_name FROM users WHERE id=$1;";
+            const sql = "SELECT id, firstname, lastname, username FROM users WHERE id=$1;";
             const result = await conn.query(sql, [id]);
             conn.release();
             return result.rows[0];
@@ -43,7 +43,7 @@ class userModel {
     async create(u) {
         try {
             const conn = await database_1.Client.connect();
-            const sql = 'INSERT INTO users (first_name, last_name, user_name, password) VALUES ( $1, $2, $3, $4) RETURNING *;';
+            const sql = 'INSERT INTO users (firstname, lastname, username, password) VALUES ( $1, $2, $3, $4) RETURNING *;';
             const hash = bcrypt_1.default.hashSync(u.password + pepper, parseInt(saltRounds));
             const result = await conn.query(sql, [u.firstname, u.lastname, u.username, hash]);
             const user = result.rows[0];
@@ -58,12 +58,12 @@ class userModel {
     async authinticate(username, password) {
         try {
             const conn = await database_1.Client.connect();
-            const sql = 'SELECT password FROM users WHERE user_name=$1;';
+            const sql = 'SELECT password FROM users WHERE username=$1;';
             const result = await conn.query(sql, [username]);
             if (result.rows.length) {
                 const user = result.rows[0];
                 if (bcrypt_1.default.compareSync(password + pepper, user.password)) {
-                    const sql = 'SELECT first_name, last_name, user_name FROM users WHERE user_name=$1;';
+                    const sql = 'SELECT firstname, lastname, username FROM users WHERE username=$1;';
                     const userInfo = await conn.query(sql, [username]);
                     return userInfo.rows[0];
                 }
@@ -76,11 +76,11 @@ class userModel {
             console.log(error);
         }
     }
-    // Deleting A User Method
+    // Deleting A User Method   
     async delete(id) {
         try {
             const conn = await database_1.Client.connect();
-            const sql = 'DELETE FROM users where id=$1 RETURNING id, first_name, last_name, user_name;';
+            const sql = 'DELETE FROM users where id=$1 RETURNING id, firstname, lastname, username;';
             const result = await conn.query(sql, [id]);
             return result.rows[0];
         }
@@ -93,7 +93,7 @@ class userModel {
     async update(u) {
         try {
             const conn = await database_1.Client.connect();
-            const sql = 'UPDATE users SET first_name=$1, last_name=$2, user_name=$3, password=$4 WHERE id=$5 RETURNING id, first_name, last_name, user_name;';
+            const sql = 'UPDATE users SET firstname=$1, lastname=$2, username=$3, password=$4 WHERE id=$5 RETURNING id, firstname, lastname, username;';
             const hash = bcrypt_1.default.hashSync(u.password + pepper, parseInt(saltRounds));
             const result = await conn.query(sql, [u.firstname, u.lastname, u.username, hash, u.id]);
             conn.release();

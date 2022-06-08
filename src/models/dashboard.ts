@@ -5,7 +5,7 @@ export class DashboardQueries {
   async usersWithOrders(): Promise<{firstName: string, lastName: string}[]> {
     try {
       const conn = await Client.connect();
-      const sql = 'SELECT first_name, last_name FROM users INNER JOIN orders ON users.id = orders.user_id';
+      const sql = 'SELECT firstname, lastname FROM users INNER JOIN orders ON users.id = orders.userId';
 
       const result = await conn.query(sql)
       const users = result.rows;
@@ -20,7 +20,7 @@ export class DashboardQueries {
   async getProductsInOrders():Promise<{ name: string; price: string; }[]> {
       try {
           const conn = await Client.connect();
-          const sql = 'SELECT name, price FROM products INNER JOIN order_products ON products.id = order_products.products_id;';
+          const sql = 'SELECT name, price FROM products INNER JOIN order_products ON products.id = order_products.productsId;';
           const result = await conn.query(sql);
           const products = result.rows;
           return products;

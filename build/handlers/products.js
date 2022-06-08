@@ -4,52 +4,68 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const products_1 = require("../models/products");
-const dotenv_1 = __importDefault(require("dotenv"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-dotenv_1.default.config();
+const jwtAuth_1 = __importDefault(require("./jwtAuth"));
 const store = new products_1.productsStore();
-const tokenSecret = process.env.TOKEN_SECRET;
-const index = async (req, res) => {
+const index = async (req, res, next) => {
     try {
         const product = await store.index();
         res.json(product);
+        next();
     }
     catch (error) {
         res.status(400);
         res.json(error);
     }
 };
-const create = async (req, res) => {
+const create = async (req, res, next) => {
     const product = {
         name: req.body.name,
-        price: req.body.price
+        price: req.body.price,
     };
     try {
         const newProduct = await store.create(product);
-        const token = jsonwebtoken_1.default.sign({ newProduct }, tokenSecret);
-        res.json(token);
+        res.json(newProduct);
+        next();
     }
     catch (error) {
         res.status(400);
         res.json(error);
     }
 };
-const show = async (req, res) => {
+const show = async (req, res, next) => {
     const id = req.params.id;
     try {
         const product = await store.show(parseInt(id));
         res.json(product);
+        next();
     }
     catch (error) {
         res.status(400);
         res.json(error);
     }
 };
-const deleteProduct = async (req, res) => {
+const update = async (req, res, next) => {
+    const product = {
+        id: req.params.id,
+        name: req.body.name,
+        price: req.body.price,
+    };
+    try {
+        const updatedProduct = await store.update(product);
+        res.json(updatedProduct);
+        next();
+    }
+    catch (error) {
+        res.status(400);
+        res.json(error);
+    }
+};
+const deleteProduct = async (req, res, next) => {
     const id = req.params.id;
     try {
         const product = await store.delete(parseInt(id));
         res.json(product);
+        next();
     }
     catch (error) {
         res.status(400);
@@ -57,9 +73,10 @@ const deleteProduct = async (req, res) => {
     }
 };
 const products_routes = (app) => {
-    app.get('/products', index);
-    app.get('/products/:id', show);
-    app.post('/products', create);
-    app.delete('/products/:id', deleteProduct);
+    app.get("/products", index);
+    app.get("/products/:id", show);
+    app.post("/products", jwtAuth_1.default, create);
+    app.patch("/products/:id", update);
+    app.delete("/products/:id", deleteProduct);
 };
 exports.default = products_routes;
